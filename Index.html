@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Effective Hours Calculator</title>
+  <style>
+    :root {
+      --bg-color: #f8f9fa;
+      --text-color: #333;
+      --heading-color: #2c3e50;
+      --card-bg: #fff;
+      --card-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      --card-highlight: #e8f4f8;
+      --input-border: #ddd;
+      --input-bg: #fff;
+      --input-text: #333;
+      --stat-value-color: #3498db;
+      --stat-label-color: #7f8c8d;
+      --clock-color: #7f8c8d;
+      --primary-btn: #3498db;
+      --primary-btn-hover: #2980b9;
+      --delete-btn: #e74c3c;
+      --delete-btn-hover: #c0392b;
+      --add-btn: #2ecc71;
+      --add-btn-hover: #27ae60;
+      --theme-toggle-bg: #ddd;
+      --theme-toggle-circle: #fff;
+    }
+
+    [data-theme="dark"] {
+      --bg-color: #1a1a1a;
+      --text-color: #f0f0f0;
+      --heading-color: #e0e0e0;
+      --card-bg: #2a2a2a;
+      --card-shadow: 0 4px 6px rgba(0,0,0,0.3);
+      --card-highlight: #2c3e50;
+      --input-border: #444;
+      --input-bg: #333;
+      --input-text: #f0f0f0;
+      --stat-value-color: #5dade2;
+      --stat-label-color: #bdc3c7;
+      --clock-color: #bdc3c7;
+      --primary-btn: #2980b9;
+      --primary-btn-hover: #3498db;
+      --delete-btn: #c0392b;
+      --delete-btn-hover: #e74c3c;
+      --add-btn: #27ae60;
+      --add-btn-hover: #2ecc71;
+      --theme-toggle-bg: #555;
+      --theme-toggle-circle: #f0f0f0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      line-height: 1.6;
+      color: var(--text-color);
+      background-color: var(--bg-color);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    
+    h1, h2 {
+      color: var(--heading-color);
+      margin-bottom: 20px;
+    }
+    
+    .card {
+      border-radius: 8px;
+      box-shadow: var(--card-shadow);
+      padding: 20px;
+      margin-bottom: 20px;
+      background-color: var(--card-bg);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .summary-card {
+      background-color: var(--card-highlight);
+    }
+    
+    .punches-container {
+      margin-bottom: 20px;
+    }
+    
+    .punch-row {
+      display: flex;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+    
+    .time-input {
+      padding: 8px;
+      border: 1px solid var(--input-border);
+      border-radius: 4px;
+      margin-right: 10px;
+      width: 120px;
+      background-color: var(--input-bg);
+      color: var(--input-text);
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+    }
+    
+    button {
+      background-color: var(--primary-btn);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-right: 10px;
+      transition: background-color 0.3s;
+    }
+    
+    button:hover {
+      background-color: var(--primary-btn-hover);
+    }
+    
+    .delete-btn {
+      background-color: var(--delete-btn);
+    }
+    
+    .delete-btn:hover {
+      background-color: var(--delete-btn-hover);
+    }
+    
+    .add-btn {
+      background-color: var(--add-btn);
+    }
+    
+    .add-btn:hover {
+      background-color: var(--add-btn-hover);
+    }
+    
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    
+    .stat-item {
+      flex: 1;
+      min-width: 150px;
+      margin: 10px;
+      text-align: center;
+      padding: 15px;
+      border-radius: 8px;
+      background-color: var(--card-bg);
+      box-shadow: var(--card-shadow);
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .stat-value {
+      font-size: 24px;
+      font-weight: bold;
+      color: var(--stat-value-color);
+      margin: 5px 0;
+    }
+    
+    .stat-label {
+      font-size: 14px;
+      color: var(--stat-label-color);
+    }
+    
+    #clock {
+      font-size: 20px;
+      color: var(--clock-color);
+      margin-bottom: 20px;
+    }
+    
+    .button-group {
+      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* Theme Toggle Switch */
+    .theme-switch-container {
+      display: flex;
+      align-items: center;
+      position: absolute;
+      top: 20px;
+      right: 20px;
+    }
+
+    .theme-switch {
+      display: inline-block;
+      height: 24px;
+      position: relative;
+      width: 48px;
+    }
+
+    .theme-switch input {
+      display: none;
+    }
+
+    .slider {
+      background-color: var(--theme-toggle-bg);
+      bottom: 0;
+      cursor: pointer;
+      left: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+      transition: .4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      background-color: var(--theme-toggle-circle);
+      bottom: 4px;
+      content: "";
+      height: 16px;
+      left: 4px;
+      position: absolute;
+      transition: .4s;
+      width: 16px;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(24px);
+    }
+
+    .theme-icons {
+      display: flex;
+      justify-content: space-between;
+      width: 48px;
+      position: absolute;
+      top: 5px;
+      left: 0;
+      padding: 0 5px;
+      box-sizing: border-box;
+      font-size: 14px;
+      color: var(--text-color);
+    }
+    
+    @media (max-width: 600px) {
+      .punch-row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .time-input {
+        margin-bottom: 10px;
+        width: 100%;
+      }
+      
+      .stat-item {
+        min-width: 120px;
+      }
+
+      .theme-switch-container {
+        position: relative;
+        top: 0;
+        right: 0;
+        margin-bottom: 20px;
+        justify-content: flex-end;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="theme-switch-container">
+    <label class="theme-switch">
+      <input type="checkbox" id="theme-toggle">
+      <span class="slider"></span>
+      <div class="theme-icons">
+        <span>☀️</span>
+        <span>🌙</span>
+      </div>
+    </label>
+  </div>
+
+  <h1>Effective Hours Calculator</h1>
+  <div id="clock"></div>
+  
+  <div class="card summary-card">
+    <h2>Today's Summary</h2>
+    <div class="stats">
+      <div class="stat-item">
+        <div class="stat-label">Effective Hours</div>
+        <div id="effective-hours" class="stat-value">0h 0m</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label">Clock Time</div>
+        <div id="clock-time" class="stat-value">0h 0m</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label">Efficiency Rate</div>
+        <div id="efficiency-rate" class="stat-value">0%</div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="card">
+    <h2>Time Entries</h2>
+    <div id="punches-container" class="punches-container">
+      <!-- Punch entries will be generated here -->
+    </div>
+    
+    <div class="button-group">
+      <button id="add-punch" class="add-btn">Add Time Entry</button>
+      <button id="clock-in-out">Clock In</button>
+      <button id="save-data">Save Data</button>
+      <button id="load-data">Load Data</button>
+      <button id="reset-data">Reset</button>
+    </div>
+  </div>
+
+  <script>
+    // Theme management
+    function setTheme(isDark) {
+      document.body.setAttribute('data-theme', isDark ? 'dark' : 'light');
+      localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
+    }
+
+    function initTheme() {
+      const savedTheme = localStorage.getItem('darkMode');
+      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const isDark = savedTheme === 'enabled' || (savedTheme === null && prefersDark);
+      
+      setTheme(isDark);
+      document.getElementById('theme-toggle').checked = isDark;
+    }
+
+    // Default punch data
+    let punches = [
+      ["10:16:15", "10:51:30"],
+      ["11:02:26", "14:11:03"],
+      ["15:04:17", "16:39:11"],
+      ["16:48:46", ""]
+    ];
+
+    // Try to load saved data
+    loadDataFromStorage();
+
+    function parseTime(str) {
+      if (!str) return new Date();
+      
+      const [h, m, s] = str.split(":").map(Number);
+      const now = new Date();
+      return new Date(now.getFullYear(), now.getMonth(), now.getDate(), h || 0, m || 0, s || 0);
+    }
+
+    function formatTime(date) {
+      if (!date) return "";
+      const h = date.getHours().toString().padStart(2, "0");
+      const m = date.getMinutes().toString().padStart(2, "0");
+      const s = date.getSeconds().toString().padStart(2, "0");
+      return `${h}:${m}:${s}`;
+    }
+
+    function formatDuration(ms) {
+      const hrs = Math.floor(ms / (1000 * 60 * 60));
+      const mins = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+      return `${hrs}h ${mins}m`;
+    }
+
+    function calculateTotals() {
+      let totalEffectiveMs = 0;
+      let firstInTime = null;
+      let lastOutTime = null;
+
+      punches.forEach(([inTime, outTime], index) => {
+        if (inTime) {
+          const start = parseTime(inTime);
+          const end = outTime ? parseTime(outTime) : new Date(); // if ongoing, use now
+          
+          if (index === 0 || !firstInTime) {
+            firstInTime = start;
+          }
+          
+          if (outTime) {
+            lastOutTime = parseTime(outTime);
+          } else {
+            lastOutTime = new Date();
+          }
+          
+          totalEffectiveMs += end - start;
+        }
+      });
+
+      // Calculate total clock time (from first punch in to last punch out)
+      let totalClockMs = 0;
+      if (firstInTime && lastOutTime) {
+        totalClockMs = lastOutTime - firstInTime;
+      }
+
+      // Calculate efficiency rate
+      let efficiencyRate = 0;
+      if (totalClockMs > 0) {
+        efficiencyRate = (totalEffectiveMs / totalClockMs) * 100;
+      }
+
+      document.getElementById("effective-hours").innerText = formatDuration(totalEffectiveMs);
+      document.getElementById("clock-time").innerText = formatDuration(totalClockMs);
+      document.getElementById("efficiency-rate").innerText = efficiencyRate.toFixed(1) + "%";
+    }
+
+    function renderPunches() {
+      const container = document.getElementById("punches-container");
+      container.innerHTML = "";
+
+      punches.forEach((punch, index) => {
+        const row = document.createElement("div");
+        row.className = "punch-row";
+        
+        // In time
+        const inInput = document.createElement("input");
+        inInput.type = "text";
+        inInput.className = "time-input";
+        inInput.value = punch[0] || "";
+        inInput.placeholder = "In (HH:MM:SS)";
+        inInput.dataset.index = index;
+        inInput.dataset.type = "in";
+        inInput.addEventListener("change", updatePunchTime);
+        
+        // Out time
+        const outInput = document.createElement("input");
+        outInput.type = "text";
+        outInput.className = "time-input";
+        outInput.value = punch[1] || "";
+        outInput.placeholder = "Out (HH:MM:SS)";
+        outInput.dataset.index = index;
+        outInput.dataset.type = "out";
+        outInput.addEventListener("change", updatePunchTime);
+
+        // Duration (if both in and out exist)
+        const duration = document.createElement("span");
+        if (punch[0] && punch[1]) {
+          const start = parseTime(punch[0]);
+          const end = parseTime(punch[1]);
+          const durationMs = end - start;
+          duration.innerText = formatDuration(durationMs);
+        } else if (punch[0]) {
+          duration.innerText = "Ongoing";
+        }
+
+        // Delete button
+        const deleteBtn = document.createElement("button");
+        deleteBtn.innerText = "Delete";
+        deleteBtn.className = "delete-btn";
+        deleteBtn.dataset.index = index;
+        deleteBtn.addEventListener("click", deletePunch);
+
+        row.appendChild(inInput);
+        row.appendChild(outInput);
+        row.appendChild(duration);
+        row.appendChild(deleteBtn);
+        container.appendChild(row);
+      });
+    }
+
+    function updatePunchTime(event) {
+      const index = parseInt(event.target.dataset.index);
+      const type = event.target.dataset.type;
+      const value = event.target.value;
+      
+      if (type === "in") {
+        punches[index][0] = value;
+      } else {
+        punches[index][1] = value;
+      }
+      
+      saveDataToStorage();
+      renderPunches();
+      calculateTotals();
+    }
+
+    function addPunch() {
+      punches.push(["", ""]);
+      saveDataToStorage();
+      renderPunches();
+    }
+
+    function deletePunch(event) {
+      const index = parseInt(event.target.dataset.index);
+      punches.splice(index, 1);
+      saveDataToStorage();
+      renderPunches();
+      calculateTotals();
+    }
+
+    function updateClock() {
+      const now = new Date();
+      document.getElementById("clock").innerText = 
+        `Current Time: ${formatTime(now)}`;
+      calculateTotals();
+    }
+
+    function handleClockInOut() {
+      const button = document.getElementById("clock-in-out");
+      
+      // Find if we have an ongoing punch (in but no out)
+      const ongoingPunchIndex = punches.findIndex(punch => punch[0] && !punch[1]);
+      
+      if (ongoingPunchIndex >= 0) {
+        // Clock out
+        const now = new Date();
+        punches[ongoingPunchIndex][1] = formatTime(now);
+        button.innerText = "Clock In";
+      } else {
+        // Clock in
+        const now = new Date();
+        punches.push([formatTime(now), ""]);
+        button.innerText = "Clock Out";
+      }
+      
+      saveDataToStorage();
+      renderPunches();
+      calculateTotals();
+    }
+
+    function updateClockInOutButton() {
+      const button = document.getElementById("clock-in-out");
+      const ongoingPunch = punches.some(punch => punch[0] && !punch[1]);
+      button.innerText = ongoingPunch ? "Clock Out" : "Clock In";
+    }
+
+    function saveDataToStorage() {
+      localStorage.setItem("effectiveHoursPunches", JSON.stringify(punches));
+    }
+
+    function loadDataFromStorage() {
+      const savedData = localStorage.getItem("effectiveHoursPunches");
+      if (savedData) {
+        punches = JSON.parse(savedData);
+      }
+    }
+
+    function resetData() {
+      if (confirm("Are you sure you want to reset all time entries?")) {
+        punches = [];
+        saveDataToStorage();
+        renderPunches();
+        calculateTotals();
+        updateClockInOutButton();
+      }
+    }
+
+    // Initialize the UI
+    renderPunches();
+    calculateTotals();
+    updateClockInOutButton();
+    updateClock();
+    initTheme();
+    
+    // Setup event listeners
+    document.getElementById("add-punch").addEventListener("click", addPunch);
+    document.getElementById("clock-in-out").addEventListener("click", handleClockInOut);
+    document.getElementById("save-data").addEventListener("click", saveDataToStorage);
+    document.getElementById("load-data").addEventListener("click", function() {
+      loadDataFromStorage();
+      renderPunches();
+      calculateTotals();
+      updateClockInOutButton();
+    });
+    document.getElementById("reset-data").addEventListener("click", resetData);
+    document.getElementById("theme-toggle").addEventListener("change", function(e) {
+      setTheme(e.target.checked);
+    });
+
+    // Listen for system dark mode changes
+    if (window.matchMedia) {
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+        if (localStorage.getItem('darkMode') === null) {
+          setTheme(e.matches);
+          document.getElementById('theme-toggle').checked = e.matches;
+        }
+      });
+    }
+
+    // Update the clock and calculations every second
+    setInterval(updateClock, 1000);
+  </script>
+</body>
+</html>
