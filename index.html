@@ -291,6 +291,10 @@
         <div class="stat-label">Efficiency Rate</div>
         <div id="efficiency-rate" class="stat-value">0%</div>
       </div>
+      <div class="stat-item">
+        <div class="stat-label">Time Since Last Out</div>
+        <div id="time-since-last-out" class="stat-value">0h 0m</div>
+      </div>
     </div>
   </div>
   
@@ -362,6 +366,7 @@
       let totalEffectiveMs = 0;
       let firstInTime = null;
       let lastOutTime = null;
+      let lastPunchWithOut = null;
 
       punches.forEach(([inTime, outTime], index) => {
         if (inTime) {
@@ -374,6 +379,7 @@
           
           if (outTime) {
             lastOutTime = parseTime(outTime);
+            lastPunchWithOut = [inTime, outTime];
           } else {
             lastOutTime = new Date();
           }
@@ -394,9 +400,25 @@
         efficiencyRate = (totalEffectiveMs / totalClockMs) * 100;
       }
 
+      // Calculate time since last clock out
+      let timeSinceLastOutMs = 0;
+      if (lastPunchWithOut) {
+        const lastOut = parseTime(lastPunchWithOut[1]);
+        const now = new Date();
+        timeSinceLastOutMs = now - lastOut;
+        
+        // Don't show time since last out if currently clocked in
+        const isCurrentlyClocked = punches.some(punch => punch[0] && !punch[1]);
+        if (isCurrentlyClocked) {
+          timeSinceLastOutMs = 0;
+        }
+      }
+
       document.getElementById("effective-hours").innerText = formatDuration(totalEffectiveMs);
       document.getElementById("clock-time").innerText = formatDuration(totalClockMs);
       document.getElementById("efficiency-rate").innerText = efficiencyRate.toFixed(1) + "%";
+      document.getElementById("time-since-last-out").innerText = timeSinceLastOutMs > 0 ? 
+        formatDuration(timeSinceLastOutMs) : "N/A";
     }
 
     function renderPunches() {
