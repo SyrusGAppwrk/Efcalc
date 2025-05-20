@@ -162,6 +162,27 @@
       color: var(--stat-label-color);
     }
     
+    .header-container {
+      margin-bottom: 20px;
+    }
+    
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    
+    .top-clock-btn {
+      font-size: 16px;
+      padding: 10px 20px;
+      background-color: var(--add-btn);
+    }
+    
+    .top-clock-btn:hover {
+      background-color: var(--add-btn-hover);
+    }
+    
     #clock {
       font-size: 20px;
       color: var(--clock-color);
@@ -236,7 +257,7 @@
       color: var(--text-color);
     }
     
-    @media (max-width: 600px) {
+          @media (max-width: 600px) {
       .punch-row {
         flex-direction: column;
         align-items: flex-start;
@@ -258,6 +279,17 @@
         margin-bottom: 20px;
         justify-content: flex-end;
       }
+      
+      .header-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      
+      .top-clock-btn {
+        width: 100%;
+        margin-top: 10px;
+      }
     }
   </style>
 </head>
@@ -273,8 +305,13 @@
     </label>
   </div>
 
-  <h1>Effective Hours Calculator</h1>
-  <div id="clock"></div>
+  <div class="header-container">
+    <div class="header-top">
+      <h1>Effective Hours Calculator</h1>
+      <button id="clock-in-out" class="top-clock-btn">Clock In</button>
+    </div>
+    <div id="clock"></div>
+  </div>
   
   <div class="card summary-card">
     <h2>Today's Summary</h2>
@@ -306,7 +343,6 @@
     
     <div class="button-group">
       <button id="add-punch" class="add-btn">Add Time Entry</button>
-      <button id="clock-in-out">Clock In</button>
       <button id="save-data">Save Data</button>
       <button id="load-data">Load Data</button>
       <button id="reset-data">Reset</button>
@@ -513,7 +549,7 @@
     }
 
     function handleClockInOut() {
-      const button = document.getElementById("clock-in-out");
+      const topButton = document.getElementById("clock-in-out");
       
       // Find if we have an ongoing punch (in but no out)
       const ongoingPunchIndex = punches.findIndex(punch => punch[0] && !punch[1]);
@@ -522,12 +558,14 @@
         // Clock out
         const now = new Date();
         punches[ongoingPunchIndex][1] = formatTime(now);
-        button.innerText = "Clock In";
+        topButton.innerText = "Clock In";
+        topButton.style.backgroundColor = "var(--add-btn)";
       } else {
         // Clock in
         const now = new Date();
         punches.push([formatTime(now), ""]);
-        button.innerText = "Clock Out";
+        topButton.innerText = "Clock Out";
+        topButton.style.backgroundColor = "var(--delete-btn)";
       }
       
       saveDataToStorage();
@@ -536,9 +574,16 @@
     }
 
     function updateClockInOutButton() {
-      const button = document.getElementById("clock-in-out");
+      const topButton = document.getElementById("clock-in-out");
       const ongoingPunch = punches.some(punch => punch[0] && !punch[1]);
-      button.innerText = ongoingPunch ? "Clock Out" : "Clock In";
+      
+      if (ongoingPunch) {
+        topButton.innerText = "Clock Out";
+        topButton.style.backgroundColor = "var(--delete-btn)";
+      } else {
+        topButton.innerText = "Clock In";
+        topButton.style.backgroundColor = "var(--add-btn)";
+      }
     }
 
     function saveDataToStorage() {
