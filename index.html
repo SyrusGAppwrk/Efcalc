@@ -3,1081 +3,1816 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Enhanced Effective Hours Calculator</title>
+  <title>Professional Time Tracker</title>
   <style>
     :root {
-      --bg-color: #f8f9fa;
-      --text-color: #333;
-      --heading-color: #2c3e50;
-      --card-bg: #fff;
-      --card-shadow: 0 4px 12px rgba(0,0,0,0.08);
-      --card-highlight: #e8f4f8;
-      --input-border: #ddd;
-      --input-focus: #3498db;
-      --input-bg: #fff;
-      --input-text: #333;
-      --stat-value-color: #3498db;
-      --stat-label-color: #7f8c8d;
-      --clock-color: #2c3e50;
-      --primary-btn: #3498db;
-      --primary-btn-hover: #2980b9;
-      --delete-btn: #e74c3c;
-      --delete-btn-hover: #c0392b;
-      --add-btn: #2ecc71;
-      --add-btn-hover: #27ae60;
-      --warning-btn: #f39c12;
-      --warning-btn-hover: #e67e22;
-      --theme-toggle-bg: #ddd;
-      --theme-toggle-circle: #fff;
-      --break-color: #f39c12;
-      --ongoing-color: #2ecc71;
-      --completed-color: #95a5a6;
+      /* Light theme variables */
+      --bg-color: #f8fafc;
+      --text-color: #334155;
+      --heading-color: #1e293b;
+      --card-bg: #ffffff;
+      --card-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      --card-hover-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      --card-highlight: linear-gradient(135deg, #f1f5f9 0%, #ffffff 100%);
+      --input-border: #e2e8f0;
+      --input-focus: #3b82f6;
+      --input-bg: #ffffff;
+      --input-text: #334155;
+      --stat-value-color: #3b82f6;
+      --stat-label-color: #64748b;
+      --clock-color: #1e293b;
+      --primary-btn: #3b82f6;
+      --primary-btn-hover: #2563eb;
+      --delete-btn: #ef4444;
+      --delete-btn-hover: #dc2626;
+      --add-btn: #10b981;
+      --add-btn-hover: #059669;
+      --warning-btn: #f59e0b;
+      --warning-btn-hover: #d97706;
+      --theme-toggle-bg: #e5e7eb;
+      --theme-toggle-circle: #ffffff;
+      --break-color: #f59e0b;
+      --ongoing-color: #10b981;
+      --completed-color: #6b7280;
+      --success-color: #10b981;
+      --error-color: #ef4444;
+      --warning-color: #f59e0b;
+      --border-radius: 12px;
+      --border-radius-sm: 8px;
+      --border-radius-lg: 16px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     [data-theme="dark"] {
-      --bg-color: #1a1a1a;
-      --text-color: #f0f0f0;
-      --heading-color: #e0e0e0;
-      --card-bg: #2a2a2a;
-      --card-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      --card-highlight: #2c3e50;
-      --input-border: #555;
-      --input-focus: #5dade2;
-      --input-bg: #333;
-      --input-text: #f0f0f0;
-      --stat-value-color: #5dade2;
-      --stat-label-color: #bdc3c7;
-      --clock-color: #e0e0e0;
-      --primary-btn: #2980b9;
-      --primary-btn-hover: #3498db;
-      --delete-btn: #c0392b;
-      --delete-btn-hover: #e74c3c;
-      --add-btn: #27ae60;
-      --add-btn-hover: #2ecc71;
-      --warning-btn: #e67e22;
-      --warning-btn-hover: #f39c12;
-      --theme-toggle-bg: #555;
-      --theme-toggle-circle: #f0f0f0;
+      --bg-color: #0f172a;
+      --text-color: #e2e8f0;
+      --heading-color: #f1f5f9;
+      --card-bg: #1e293b;
+      --card-shadow: 0 4px 16px rgba(0,0,0,0.3);
+      --card-hover-shadow: 0 8px 32px rgba(0,0,0,0.4);
+      --card-highlight: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+      --input-border: #475569;
+      --input-focus: #60a5fa;
+      --input-bg: #334155;
+      --input-text: #e2e8f0;
+      --stat-value-color: #60a5fa;
+      --stat-label-color: #94a3b8;
+      --clock-color: #f1f5f9;
+      --primary-btn: #2563eb;
+      --primary-btn-hover: #3b82f6;
+      --delete-btn: #dc2626;
+      --delete-btn-hover: #ef4444;
+      --add-btn: #059669;
+      --add-btn-hover: #10b981;
+      --warning-btn: #d97706;
+      --warning-btn-hover: #f59e0b;
+      --theme-toggle-bg: #475569;
+      --theme-toggle-circle: #e2e8f0;
     }
 
     * {
       box-sizing: border-box;
+      margin: 0;
+      padding: 0;
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      max-width: 1000px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 20px;
+      padding: 24px;
       line-height: 1.6;
       color: var(--text-color);
       background-color: var(--bg-color);
-      transition: background-color 0.3s ease, color 0.3s ease;
+      transition: var(--transition);
+      min-height: 100vh;
     }
     
-    h1, h2 {
+    h1, h2, h3 {
       color: var(--heading-color);
-      margin-bottom: 20px;
+      font-weight: 700;
+      letter-spacing: -0.025em;
     }
+
+    h1 { font-size: 2.25rem; margin-bottom: 0.5rem; }
+    h2 { font-size: 1.5rem; margin-bottom: 1rem; }
+    h3 { font-size: 1.25rem; margin-bottom: 0.75rem; }
     
     .card {
-      border-radius: 12px;
+      border-radius: var(--border-radius);
       box-shadow: var(--card-shadow);
-      padding: 24px;
-      margin-bottom: 24px;
-      background-color: var(--card-bg);
-      transition: all 0.3s ease;
-      border: 1px solid transparent;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      background: var(--card-bg);
+      transition: var(--transition);
+      border: 1px solid var(--input-border);
+      backdrop-filter: blur(8px);
     }
     
     .card:hover {
       transform: translateY(-2px);
-      box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+      box-shadow: var(--card-hover-shadow);
     }
     
     .summary-card {
-      background: linear-gradient(135deg, var(--card-highlight) 0%, var(--card-bg) 100%);
-      border: 1px solid var(--input-border);
-    }
-    
-    .punches-container {
-      margin-bottom: 20px;
-    }
-    
-    .punch-row {
-      display: flex;
-      margin-bottom: 12px;
-      align-items: center;
-      padding: 12px;
-      border-radius: 8px;
-      background-color: var(--card-bg);
-      border: 1px solid var(--input-border);
-      transition: all 0.2s ease;
-    }
-
-    .punch-row:hover {
-      border-color: var(--input-focus);
-      box-shadow: 0 2px 8px rgba(52, 152, 219, 0.1);
-    }
-
-    .punch-row.ongoing {
-      border-color: var(--ongoing-color);
-      background: linear-gradient(135deg, rgba(46, 204, 113, 0.1) 0%, var(--card-bg) 100%);
-    }
-
-    .punch-row.completed {
-      border-color: var(--completed-color);
-    }
-    
-    .time-input {
-      padding: 10px 12px;
-      border: 2px solid var(--input-border);
-      border-radius: 6px;
-      margin-right: 12px;
-      width: 130px;
-      background-color: var(--input-bg);
-      color: var(--input-text);
-      transition: all 0.2s ease;
-      font-family: 'Courier New', monospace;
-      font-size: 14px;
-    }
-
-    .time-input:focus {
-      outline: none;
-      border-color: var(--input-focus);
-      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-    }
-
-    .time-input.invalid {
-      border-color: var(--delete-btn);
-      box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
-    }
-    
-    button {
-      background-color: var(--primary-btn);
-      color: white;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-right: 8px;
-      transition: all 0.2s ease;
-      font-weight: 500;
+      background: var(--card-highlight);
       position: relative;
       overflow: hidden;
     }
 
-    button:hover {
-      background-color: var(--primary-btn-hover);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
-
-    button:active {
-      transform: translateY(0);
-    }
-    
-    .delete-btn {
-      background-color: var(--delete-btn);
-    }
-    
-    .delete-btn:hover {
-      background-color: var(--delete-btn-hover);
-    }
-    
-    .add-btn {
-      background-color: var(--add-btn);
-    }
-    
-    .add-btn:hover {
-      background-color: var(--add-btn-hover);
-    }
-
-    .warning-btn {
-      background-color: var(--warning-btn);
-    }
-
-    .warning-btn:hover {
-      background-color: var(--warning-btn-hover);
-    }
-    
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px;
-      margin-bottom: 20px;
-    }
-    
-    .stat-item {
-      text-align: center;
-      padding: 20px;
-      border-radius: 12px;
-      background-color: var(--card-bg);
-      box-shadow: var(--card-shadow);
-      transition: all 0.3s ease;
-      border: 1px solid var(--input-border);
-    }
-
-    .stat-item:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-    }
-    
-    .stat-value {
-      font-size: 28px;
-      font-weight: 700;
-      color: var(--stat-value-color);
-      margin: 8px 0;
-      font-family: 'Courier New', monospace;
-    }
-    
-    .stat-label {
-      font-size: 13px;
-      color: var(--stat-label-color);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-weight: 500;
+    .summary-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-btn), var(--add-btn), var(--warning-btn));
     }
     
     .header-container {
-      margin-bottom: 30px;
+      margin-bottom: 2rem;
     }
     
     .header-top {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 15px;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .header-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .subtitle {
+      color: var(--stat-label-color);
+      font-size: 1.125rem;
+      font-weight: 500;
     }
     
-    .top-clock-btn {
-      font-size: 16px;
-      padding: 12px 24px;
+    .clock-section {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .quick-clock-btn {
+      font-size: 1rem;
+      padding: 0.875rem 1.5rem;
       background-color: var(--add-btn);
       font-weight: 600;
-      border-radius: 8px;
+      border-radius: var(--border-radius-sm);
+      color: white;
+      border: none;
+      cursor: pointer;
+      transition: var(--transition);
+      position: relative;
+      overflow: hidden;
     }
     
-    .top-clock-btn:hover {
+    .quick-clock-btn:hover {
       background-color: var(--add-btn-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+
+    .quick-clock-btn.clocked-in {
+      background-color: var(--delete-btn);
+    }
+
+    .quick-clock-btn.clocked-in:hover {
+      background-color: var(--delete-btn-hover);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
     }
     
     #clock {
-      font-size: 24px;
+      font-size: 1.5rem;
       color: var(--clock-color);
-      margin-bottom: 20px;
-      font-family: 'Courier New', monospace;
+      font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
       font-weight: 600;
       text-align: center;
-      padding: 16px;
-      background-color: var(--card-bg);
-      border-radius: 8px;
+      padding: 1.5rem;
+      background: var(--card-bg);
+      border-radius: var(--border-radius);
       border: 1px solid var(--input-border);
-    }
-    
-    .button-group {
-      margin-top: 24px;
+      box-shadow: var(--card-shadow);
       display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
+      flex-direction: column;
+      gap: 0.5rem;
     }
 
+    .clock-time {
+      font-size: 2rem;
+      color: #fff;
+    }
+
+    .clock-date {
+      font-size: 1rem;
+      color: var(--stat-label-color);
+      font-weight: 500;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .stat-card {
+      text-align: center;
+      padding: 1.5rem;
+      border-radius: var(--border-radius);
+      background: var(--card-bg);
+      box-shadow: var(--card-shadow);
+      transition: var(--transition);
+      border: 1px solid var(--input-border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--primary-btn);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .stat-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--card-hover-shadow);
+    }
+    
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--stat-value-color);
+      margin: 0.5rem 0;
+      font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+    }
+    
+    .stat-label {
+      font-size: 0.875rem;
+      color: var(--stat-label-color);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+    }
+
+    .stat-description {
+      font-size: 0.75rem;
+      color: var(--stat-label-color);
+      margin-top: 0.25rem;
+      opacity: 0.8;
+    }
+    
+    .entries-container {
+      margin-bottom: 2rem;
+    }
+    
+    .entry-row {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1rem;
+      padding: 1.25rem;
+      border-radius: var(--border-radius);
+      background: var(--card-bg);
+      border: 2px solid var(--input-border);
+      transition: var(--transition);
+      position: relative;
+      gap: 1rem;
+    }
+
+    .entry-row:hover {
+      border-color: var(--input-focus);
+      box-shadow: 0 4px 16px rgba(59, 130, 246, 0.1);
+    }
+
+    .entry-row.ongoing {
+      border-color: var(--ongoing-color);
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, var(--card-bg) 100%);
+      animation: pulse-border 2s infinite;
+    }
+
+    .entry-row.completed {
+      border-color: var(--completed-color);
+    }
+
+    @keyframes pulse-border {
+      0%, 100% { border-color: var(--ongoing-color); }
+      50% { border-color: rgba(16, 185, 129, 0.6); }
+    }
+    
+    .time-input {
+      padding: 0.75rem 1rem;
+      border: 2px solid var(--input-border);
+      border-radius: var(--border-radius-sm);
+      width: 140px;
+      background: var(--input-bg);
+      color: var(--input-text);
+      transition: var(--transition);
+      font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .time-input:focus {
+      outline: none;
+      border-color: var(--input-focus);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .time-input:invalid, .time-input.invalid {
+      border-color: var(--error-color);
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+    }
+    
+    .btn {
+      background: var(--primary-btn);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.25rem;
+      border-radius: var(--border-radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      font-weight: 600;
+      font-size: 0.875rem;
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+
+    .btn:hover::before {
+      left: 100%;
+    }
+    
+    .btn-delete { background: var(--delete-btn); }
+    .btn-delete:hover { background: var(--delete-btn-hover); }
+    
+    .btn-add { background: var(--add-btn); }
+    .btn-add:hover { background: var(--add-btn-hover); }
+
+    .btn-warning { background: var(--warning-btn); }
+    .btn-warning:hover { background: var(--warning-btn-hover); }
+
+    .btn-secondary {
+      background: var(--completed-color);
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: var(--stat-label-color);
+    }
+    
     .duration-display {
       min-width: 100px;
       text-align: center;
-      font-family: 'Courier New', monospace;
+      font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
       font-weight: 600;
       color: var(--stat-value-color);
-      background-color: rgba(52, 152, 219, 0.1);
-      padding: 8px 12px;
-      border-radius: 4px;
-      margin-right: 12px;
+      background: rgba(59, 130, 246, 0.1);
+      padding: 0.5rem 0.75rem;
+      border-radius: var(--border-radius-sm);
+      font-size: 0.875rem;
     }
 
     .duration-display.ongoing {
       color: var(--ongoing-color);
-      background-color: rgba(46, 204, 113, 0.1);
-      animation: pulse 2s infinite;
+      background: rgba(16, 185, 129, 0.1);
+      animation: pulse-glow 2s infinite;
     }
 
-    @keyframes pulse {
+    @keyframes pulse-glow {
       0%, 100% { opacity: 1; }
       50% { opacity: 0.7; }
     }
 
     .break-indicator {
       color: var(--break-color);
-      font-size: 12px;
-      margin-left: 8px;
-      font-weight: 500;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(245, 158, 11, 0.1);
+      padding: 0.25rem 0.5rem;
+      border-radius: var(--border-radius-sm);
+      white-space: nowrap;
     }
 
-    /* Theme Toggle Switch */
-    .theme-switch-container {
+    .controls-section {
       display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .control-group {
+      display: flex;
+      gap: 0.5rem;
       align-items: center;
-      position: absolute;
-      top: 20px;
-      right: 20px;
-    }
-
-    .theme-switch {
-      display: inline-block;
-      height: 28px;
-      position: relative;
-      width: 56px;
-    }
-
-    .theme-switch input {
-      display: none;
-    }
-
-    .slider {
-      background-color: var(--theme-toggle-bg);
-      bottom: 0;
-      cursor: pointer;
-      left: 0;
-      position: absolute;
-      right: 0;
-      top: 0;
-      transition: .4s;
-      border-radius: 34px;
-    }
-
-    .slider:before {
-      background-color: var(--theme-toggle-circle);
-      bottom: 4px;
-      content: "";
-      height: 20px;
-      left: 4px;
-      position: absolute;
-      transition: .4s;
-      width: 20px;
-      border-radius: 50%;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    }
-
-    input:checked + .slider:before {
-      transform: translateX(28px);
-    }
-
-    .theme-icons {
-      display: flex;
-      justify-content: space-between;
-      width: 56px;
-      position: absolute;
-      top: 6px;
-      left: 0;
-      padding: 0 8px;
-      box-sizing: border-box;
-      font-size: 14px;
-      color: var(--text-color);
     }
 
     .export-section {
-      margin-top: 20px;
-      padding: 16px;
-      background-color: rgba(52, 152, 219, 0.05);
-      border-radius: 8px;
+      background: rgba(59, 130, 246, 0.05);
       border: 1px solid var(--input-border);
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-top: 2rem;
     }
 
-    .export-section h3 {
-      margin: 0 0 12px 0;
-      font-size: 16px;
-      color: var(--heading-color);
+    .export-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      align-items: center;
     }
 
     .date-picker {
-      padding: 8px 12px;
+      padding: 0.75rem 1rem;
       border: 2px solid var(--input-border);
-      border-radius: 6px;
-      margin-right: 12px;
-      background-color: var(--input-bg);
+      border-radius: var(--border-radius-sm);
+      background: var(--input-bg);
       color: var(--input-text);
-      transition: all 0.2s ease;
+      transition: var(--transition);
+      font-size: 0.875rem;
     }
 
     .date-picker:focus {
       outline: none;
       border-color: var(--input-focus);
-      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
     }
 
-    .validation-message {
+    /* Enhanced Header Styles */
+    .main-header {
+      background: linear-gradient(135deg, var(--primary-btn) 0%, var(--add-btn) 100%);
+      color: white;
+      margin: -24px -24px 2rem -24px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    }
+
+    .header-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+      opacity: 0.3;
+    }
+
+    .header-content {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2rem 2rem 1.5rem 2rem;
+      gap: 2rem;
+    }
+
+    .header-left {
+      flex: 1;
+    }
+
+    .logo-section {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo-icon {
+      font-size: 2.5rem;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      width: 60px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+
+    .logo-text .app-title {
+      font-size: 2rem;
+      font-weight: 800;
+      margin: 0;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      letter-spacing: -0.02em;
+    }
+
+    .logo-text .app-tagline {
+      font-size: 0.9rem;
+      margin: 0;
+      opacity: 0.9;
+      font-weight: 500;
+      letter-spacing: 0.02em;
+    }
+
+    .header-center {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+
+    .header-clock {
+      text-align: center;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(12px);
+      border-radius: var(--border-radius);
+      padding: 1rem 2rem;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+
+    .header-clock-time {
+      font-size: 2.5rem;
+      font-weight: 700;
+      font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+      line-height: 1;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .header-clock-date {
+      font-size: 0.875rem;
+      opacity: 0.9;
+      margin-top: 0.25rem;
+      font-weight: 500;
+    }
+
+    .header-right {
+      flex: 1;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .header-controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .primary-clock-btn {
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: 2px solid rgba(255,255,255,0.3);
+      padding: 0.875rem 1.5rem;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      transition: var(--transition);
+      font-weight: 700;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .primary-clock-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.6s;
+    }
+
+    .primary-clock-btn:hover::before {
+      left: 100%;
+    }
+
+    .primary-clock-btn:hover {
+      background: rgba(255,255,255,0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+      border-color: rgba(255,255,255,0.4);
+    }
+
+    .primary-clock-btn.clocked-in {
+      background: rgba(239, 68, 68, 0.3);
+      border-color: rgba(239, 68, 68, 0.5);
+    }
+
+    .primary-clock-btn.clocked-in:hover {
+      background: rgba(239, 68, 68, 0.4);
+      border-color: rgba(239, 68, 68, 0.6);
+    }
+
+    .btn-icon {
+      font-size: 1.2rem;
+    }
+
+    .theme-toggle-wrapper {
+      display: flex;
+      align-items: center;
+    }
+
+    .theme-toggle {
+      display: inline-block;
+      height: 32px;
+      width: 64px;
+      position: relative;
+    }
+
+    .theme-toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .theme-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255,255,255,0.2);
+      transition: var(--transition);
+      border-radius: 34px;
+      border: 1px solid rgba(255,255,255,0.3);
+      backdrop-filter: blur(8px);
+    }
+
+    .theme-slider:before {
+      position: absolute;
+      content: "";
+      height: 24px;
+      width: 24px;
+      left: 4px;
+      bottom: 3px;
+      background: white;
+      transition: var(--transition);
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .theme-toggle input:checked + .theme-slider:before {
+      transform: translateX(32px);
+    }
+
+    .theme-icons {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      left: 8px;
+      right: 8px;
+      display: flex;
+      justify-content: space-between;
       font-size: 12px;
-      color: var(--delete-btn);
-      margin-top: 4px;
+      pointer-events: none;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      background: rgba(0,0,0,0.1);
+      backdrop-filter: blur(8px);
+      padding: 0.75rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      position: relative;
+      z-index: 2;
+    }
+
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      animation: pulse-dot 2s infinite;
+    }
+
+    .status-dot.working {
+      background: #10b981;
+    }
+
+    .status-dot.break {
+      background: #f59e0b;
+    }
+
+    .status-dot.idle {
+      background: #6b7280;
+      animation: none;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.2); }
+    }
+
+    .status-text {
+      font-size: 0.875rem;
+      font-weight: 500;
+      opacity: 0.9;
+    }
+
+    .status-stats {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .quick-stat {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      font-size: 0.875rem;
+    }
+
+    .quick-stat-label {
+      opacity: 0.8;
+      font-weight: 500;
+    }
+
+    .quick-stat-value {
+      font-weight: 700;
+      font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+    }
+
+    /* Remove old theme toggle container */
+    .theme-toggle-container {
       display: none;
     }
 
+    /* Update header container */
+    .header-container {
+      display: none;
+    }
+
+    /* Notifications */
     .notification {
       position: fixed;
-      top: 20px;
-      right: 20px;
-      padding: 12px 20px;
-      border-radius: 6px;
+      top: 2rem;
+      right: 2rem;
+      padding: 1rem 1.5rem;
+      border-radius: var(--border-radius-sm);
       color: white;
-      font-weight: 500;
-      z-index: 1000;
+      font-weight: 600;
+      z-index: 2000;
       transform: translateX(400px);
-      transition: transform 0.3s ease;
+      transition: var(--transition);
+      box-shadow: var(--card-shadow);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-width: 300px;
     }
 
     .notification.show {
       transform: translateX(0);
     }
 
-    .notification.success {
-      background-color: var(--add-btn);
+    .notification.success { background: var(--success-color); }
+    .notification.error { background: var(--error-color); }
+    .notification.warning { background: var(--warning-color); }
+
+    .notification::before {
+      content: '';
+      width: 4px;
+      height: 100%;
+      background: rgba(255,255,255,0.3);
+      position: absolute;
+      left: 0;
+      top: 0;
+      border-radius: var(--border-radius-sm) 0 0 var(--border-radius-sm);
     }
 
-    .notification.error {
-      background-color: var(--delete-btn);
+    /* Loading States */
+    .loading {
+      opacity: 0.6;
+      pointer-events: none;
+      position: relative;
     }
 
-    .notification.warning {
-      background-color: var(--warning-btn);
+    .loading::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 20px;
+      height: 20px;
+      margin-top: -10px;
+      margin-left: -10px;
+      border: 2px solid transparent;
+      border-top-color: var(--primary-btn);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1.5rem;
+      color: var(--stat-label-color);
+    }
+
+    .empty-state-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    .empty-state-text {
+      font-size: 1.125rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .empty-state-subtext {
+      font-size: 0.875rem;
+      opacity: 0.8;
     }
     
-    @media (max-width: 600px) {
+    /* Responsive Design */
+    @media (max-width: 768px) {
       body {
-        padding: 16px;
+        padding: 1rem;
       }
 
-      .punch-row {
+      .main-header {
+        margin: -16px -16px 2rem -16px;
+      }
+
+      .header-content {
+        flex-direction: column;
+        gap: 1.5rem;
+        padding: 1.5rem 1rem 1rem 1rem;
+      }
+
+      .header-left, .header-center, .header-right {
+        flex: none;
+        width: 100%;
+      }
+
+      .header-center {
+        order: 3;
+      }
+
+      .header-right {
+        order: 2;
+        justify-content: center;
+      }
+
+      .logo-section {
+        justify-content: center;
+      }
+
+      .logo-text .app-title {
+        font-size: 1.75rem;
+      }
+
+      .header-clock {
+        padding: 0.75rem 1.5rem;
+      }
+
+      .header-clock-time {
+        font-size: 2rem;
+      }
+
+      .status-bar {
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 1rem;
+        text-align: center;
+      }
+
+      .status-stats {
+        justify-content: center;
+      }
+
+      .entry-row {
         flex-direction: column;
         align-items: stretch;
-        gap: 12px;
+        gap: 1rem;
       }
       
       .time-input {
-        margin-right: 0;
         width: 100%;
       }
 
       .duration-display {
-        margin-right: 0;
-        margin-bottom: 8px;
+        text-align: center;
       }
 
-      .stats {
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        gap: 12px;
+      .stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
       }
 
-      .theme-switch-container {
-        position: relative;
-        top: 0;
-        right: 0;
-        margin-bottom: 20px;
-        justify-content: flex-end;
+      .controls-section {
+        flex-direction: column;
       }
-      
-      .header-top {
+
+      .control-group {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .export-controls {
         flex-direction: column;
         align-items: stretch;
-        gap: 16px;
-      }
-      
-      .top-clock-btn {
-        width: 100%;
       }
 
-      .button-group {
+      .notification {
+        right: 1rem;
+        left: 1rem;
+        transform: translateY(-100px);
+        min-width: auto;
+      }
+
+      .notification.show {
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 1.5rem;
+      }
+
+      .logo-text .app-title {
+        font-size: 1.5rem;
+      }
+
+      .stat-value {
+        font-size: 1.5rem;
+      }
+
+      .header-clock-time {
+        font-size: 1.75rem;
+      }
+
+      .primary-clock-btn {
+        padding: 0.75rem 1.25rem;
+        font-size: 0.875rem;
+      }
+
+      .status-stats {
         flex-direction: column;
+        gap: 0.5rem;
       }
+    }
 
-      .button-group button {
-        margin-right: 0;
-        margin-bottom: 8px;
+    /* Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* Focus styles for better accessibility */
+    .btn:focus,
+    .time-input:focus,
+    .date-picker:focus {
+      outline: 2px solid var(--input-focus);
+      outline-offset: 2px;
+    }
+
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+      :root {
+        --card-shadow: 0 0 0 1px currentColor;
+        --input-border: currentColor;
       }
     }
   </style>
 </head>
 <body>
-  <div class="theme-switch-container">
-    <label class="theme-switch">
-      <input type="checkbox" id="theme-toggle">
-      <span class="slider"></span>
-      <div class="theme-icons">
-        <span>☀️</span>
-        <span>🌙</span>
+  <!-- Enhanced Header -->
+  <header class="main-header">
+    <div class="header-background"></div>
+    <div class="header-content">
+      <div class="header-left">
+        <div class="logo-section">
+          <div class="logo-icon">⏱️</div>
+          <div class="logo-text">
+            <h1 class="app-title">TimeTrack Pro</h1>
+            <p class="app-tagline">Professional Time Management</p>
+          </div>
+        </div>
       </div>
-    </label>
-  </div>
-
-  <div class="header-container">
-    <div class="header-top">
-      <h1>Enhanced Effective Hours Calculator</h1>
-      <button id="clock-in-out" class="top-clock-btn">Clock In</button>
-    </div>
-    <div id="clock"></div>
-  </div>
-  
-  <div class="card summary-card">
-    <h2>Today's Summary</h2>
-    <div class="stats">
-      <div class="stat-item">
-        <div class="stat-label">Effective Hours</div>
-        <div id="effective-hours" class="stat-value">0h 0m</div>
+      
+      <div class="header-center">
+        <div id="header-clock" class="header-clock">
+          <div class="header-clock-time">--:--:--</div>
+          <div class="header-clock-date">Loading...</div>
+        </div>
       </div>
-      <div class="stat-item">
-        <div class="stat-label">Clock Time</div>
-        <div id="clock-time" class="stat-value">0h 0m</div>
+      
+      <div class="header-right">
+        <div class="header-controls">
+          <button id="quick-clock-btn" class="primary-clock-btn">
+            <span class="btn-icon">🕐</span>
+            <span class="btn-text">Clock In</span>
+          </button>
+          
+          <div class="theme-toggle-wrapper">
+            <label class="theme-toggle">
+              <input type="checkbox" id="theme-toggle">
+              <span class="theme-slider"></span>
+              <div class="theme-icons">
+                <span>☀️</span>
+                <span>🌙</span>
+              </div>
+            </label>
+          </div>
+        </div>
       </div>
-      <div class="stat-item">
-        <div class="stat-label">Efficiency Rate</div>
-        <div id="efficiency-rate" class="stat-value">0%</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-label">Break Time</div>
-        <div id="break-time" class="stat-value">0h 0m</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-label">Time Since Last Out</div>
-        <div id="time-since-last-out" class="stat-value">0h 0m</div>
-      </div>
-    </div>
-  </div>
-  
-  <div class="card">
-    <h2>Time Entries</h2>
-    <div id="punches-container" class="punches-container">
-      <!-- Punch entries will be generated here -->
     </div>
     
-    <div class="button-group">
-      <button id="add-punch" class="add-btn">Add Time Entry</button>
-      <button id="quick-break" class="warning-btn">Start Break</button>
-      <button id="save-data">Save Data</button>
-      <button id="load-data">Load Data</button>
-      <button id="reset-data">Reset</button>
+    <!-- Status Bar -->
+    <div class="status-bar">
+      <div class="status-item">
+        <span class="status-dot" id="status-indicator"></span>
+        <span class="status-text" id="status-text">Ready to start</span>
+      </div>
+      <div class="status-stats">
+        <span class="quick-stat">
+          <span class="quick-stat-label">Today:</span>
+          <span class="quick-stat-value" id="header-today-hours">0h 0m</span>
+        </span>
+        <span class="quick-stat">
+          <span class="quick-stat-label">Efficiency:</span>
+          <span class="quick-stat-value" id="header-efficiency">0%</span>
+        </span>
+      </div>
     </div>
+  </header>
+  
+  <main>
+    <section class="card summary-card">
+      <h2>Today's Performance</h2>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Effective Hours</div>
+          <div id="effective-hours" class="stat-value">0h 0m</div>
+          <div class="stat-description">Time actively working</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Clock Time</div>
+          <div id="clock-time" class="stat-value">0h 0m</div>
+          <div class="stat-description">First in to last out</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Efficiency Rate</div>
+          <div id="efficiency-rate" class="stat-value">0%</div>
+          <div class="stat-description">Work time / Clock time</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Break Time</div>
+          <div id="break-time" class="stat-value">0h 0m</div>
+          <div class="stat-description">Time between sessions</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Time Since Last Out</div>
+          <div id="time-since-last-out" class="stat-value">N/A</div>
+          <div class="stat-description">Time away from work</div>
+        </div>
+      </div>
+    </section>
+    
+    <section class="card">
+      <h2>Time Entries</h2>
+      <div id="entries-container" class="entries-container">
+        <!-- Entries will be rendered here -->
+      </div>
+      
+      <div class="controls-section">
+        <div class="control-group">
+          <button id="add-entry-btn" class="btn btn-add">➕ Add Entry</button>
+          <button id="start-break-btn" class="btn btn-warning">☕ Start Break</button>
+        </div>
+        <div class="control-group">
+          <button id="save-btn" class="btn btn-secondary">💾 Save</button>
+          <button id="load-btn" class="btn btn-secondary">📁 Load</button>
+          <button id="reset-btn" class="btn btn-delete">🗑️ Reset</button>
+        </div>
+      </div>
 
-    <div class="export-section">
-      <h3>Data Export</h3>
-      <input type="date" id="export-date" class="date-picker" />
-      <button id="export-csv">Export CSV</button>
-      <button id="export-json">Export JSON</button>
-    </div>
-  </div>
+      <div class="export-section">
+        <h3>📊 Export Data</h3>
+        <div class="export-controls">
+          <input type="date" id="export-date" class="date-picker" />
+          <button id="export-csv-btn" class="btn">📈 Export CSV</button>
+          <button id="export-json-btn" class="btn">📄 Export JSON</button>
+        </div>
+      </div>
+    </section>
+  </main>
 
   <script>
-    // Enhanced theme management
-    function setTheme(isDark) {
-      document.body.setAttribute('data-theme', isDark ? 'dark' : 'light');
-      localStorage.setItem('darkMode', isDark ? 'enabled' : 'disabled');
-    }
-
-    function initTheme() {
-      const savedTheme = localStorage.getItem('darkMode');
-      const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const isDark = savedTheme === 'enabled' || (savedTheme === null && prefersDark);
-      
-      setTheme(isDark);
-      document.getElementById('theme-toggle').checked = isDark;
-    }
-
-    // Enhanced notification system
-    function showNotification(message, type = 'success') {
-      const notification = document.createElement('div');
-      notification.className = `notification ${type}`;
-      notification.textContent = message;
-      document.body.appendChild(notification);
-      
-      setTimeout(() => notification.classList.add('show'), 100);
-      setTimeout(() => {
-        notification.classList.remove('show');
-        setTimeout(() => document.body.removeChild(notification), 300);
-      }, 3000);
-    }
-
-    // Default punch data with date storage
-    let punches = [];
-    let currentDate = new Date().toDateString();
-
-    // Load data for current date
-    loadDataFromStorage();
-
-    function parseTime(str) {
-      if (!str) return new Date();
-      
-      // Handle both HH:MM:SS and HH:MM formats
-      const timeParts = str.split(":").map(Number);
-      const [h, m, s] = [timeParts[0] || 0, timeParts[1] || 0, timeParts[2] || 0];
-      
-      const now = new Date();
-      return new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, s);
-    }
-
-    function formatTime(date) {
-      if (!date) return "";
-      const h = date.getHours().toString().padStart(2, "0");
-      const m = date.getMinutes().toString().padStart(2, "0");
-      const s = date.getSeconds().toString().padStart(2, "0");
-      return `${h}:${m}:${s}`;
-    }
-
-    function formatDuration(ms) {
-      if (ms < 0) return "0h 0m";
-      const hrs = Math.floor(ms / (1000 * 60 * 60));
-      const mins = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
-      return `${hrs}h ${mins}m`;
-    }
-
-    function validateTimeInput(timeStr) {
-      if (!timeStr) return true;
-      const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/;
-      return timeRegex.test(timeStr);
-    }
-
-    function calculateBreakTime() {
-      let totalBreakMs = 0;
-      
-      for (let i = 0; i < punches.length - 1; i++) {
-        const currentPunch = punches[i];
-        const nextPunch = punches[i + 1];
+    // Application state management
+    class TimeTracker {
+      constructor() {
+        this.entries = [];
+        this.currentDate = new Date().toDateString();
+        this.clockUpdateInterval = null;
+        this.autoSaveInterval = null;
         
-        if (currentPunch[1] && nextPunch[0]) {
-          const breakStart = parseTime(currentPunch[1]);
-          const breakEnd = parseTime(nextPunch[0]);
-          totalBreakMs += breakEnd - breakStart;
+        this.init();
+      }
+
+      init() {
+        this.loadFromStorage();
+        this.setupEventListeners();
+        this.initTheme();
+        this.startClockUpdate();
+        this.startAutoSave();
+        this.render();
+        this.setExportDateToToday();
+      }
+
+      // Theme Management
+      initTheme() {
+        const savedTheme = localStorage.getItem('timeTracker_theme');
+        const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+        const isDark = savedTheme === 'dark' || (savedTheme === null && prefersDark);
+        
+        this.setTheme(isDark);
+        document.getElementById('theme-toggle').checked = isDark;
+
+        // Listen for system theme changes
+        if (window.matchMedia) {
+          window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            if (localStorage.getItem('timeTracker_theme') === null) {
+              this.setTheme(e.matches);
+              document.getElementById('theme-toggle').checked = e.matches;
+            }
+          });
         }
       }
-      
-      return totalBreakMs;
-    }
 
-    function calculateTotals() {
-      let totalEffectiveMs = 0;
-      let firstInTime = null;
-      let lastOutTime = null;
-      let lastPunchWithOut = null;
-
-      punches.forEach(([inTime, outTime], index) => {
-        if (inTime && validateTimeInput(inTime)) {
-          const start = parseTime(inTime);
-          const end = outTime && validateTimeInput(outTime) ? parseTime(outTime) : new Date();
-          
-          if (index === 0 || !firstInTime) {
-            firstInTime = start;
-          }
-          
-          if (outTime && validateTimeInput(outTime)) {
-            lastOutTime = parseTime(outTime);
-            lastPunchWithOut = [inTime, outTime];
-          } else {
-            lastOutTime = new Date();
-          }
-          
-          totalEffectiveMs += Math.max(0, end - start);
-        }
-      });
-
-      // Calculate total clock time
-      let totalClockMs = 0;
-      if (firstInTime && lastOutTime) {
-        totalClockMs = Math.max(0, lastOutTime - firstInTime);
+      setTheme(isDark) {
+        document.body.setAttribute('data-theme', isDark ? 'dark' : 'light');
+        localStorage.setItem('timeTracker_theme', isDark ? 'dark' : 'light');
       }
 
-      // Calculate break time
-      const totalBreakMs = calculateBreakTime();
-
-      // Calculate efficiency rate
-      let efficiencyRate = 0;
-      if (totalClockMs > 0) {
-        efficiencyRate = (totalEffectiveMs / totalClockMs) * 100;
-      }
-
-      // Calculate time since last clock out
-      let timeSinceLastOutMs = 0;
-      if (lastPunchWithOut) {
-        const lastOut = parseTime(lastPunchWithOut[1]);
+      // Time utilities
+      parseTime(timeStr) {
+        if (!timeStr) return new Date();
+        
+        const timeParts = timeStr.split(':').map(Number);
+        const [h = 0, m = 0, s = 0] = timeParts;
+        
         const now = new Date();
-        timeSinceLastOutMs = Math.max(0, now - lastOut);
-        
-        const isCurrentlyClocked = punches.some(punch => punch[0] && !punch[1]);
-        if (isCurrentlyClocked) {
-          timeSinceLastOutMs = 0;
+        return new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, s);
+      }
+
+      formatTime(date) {
+        if (!date) return '';
+        return date.toTimeString().split(' ')[0]; // HH:MM:SS format
+      }
+
+      formatDuration(ms) {
+        if (ms < 0) return '0h 0m';
+        const hours = Math.floor(ms / (1000 * 60 * 60));
+        const minutes = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+        return `${hours}h ${minutes}m`;
+      }
+
+      validateTimeInput(timeStr) {
+        if (!timeStr) return true;
+        const timeRegex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9](:[0-5][0-9])?$/;
+        return timeRegex.test(timeStr);
+      }
+
+      // Entry management
+      addEntry() {
+        this.entries.push({ in: '', out: '', id: Date.now() });
+        this.saveToStorage();
+        this.render();
+        this.showNotification('New time entry added', 'success');
+      }
+
+      deleteEntry(id) {
+        if (confirm('Are you sure you want to delete this time entry?')) {
+          this.entries = this.entries.filter(entry => entry.id !== id);
+          this.saveToStorage();
+          this.render();
+          this.showNotification('Time entry deleted', 'success');
         }
       }
 
-      // Update display
-      document.getElementById("effective-hours").innerText = formatDuration(totalEffectiveMs);
-      document.getElementById("clock-time").innerText = formatDuration(totalClockMs);
-      document.getElementById("efficiency-rate").innerText = efficiencyRate.toFixed(1) + "%";
-      document.getElementById("break-time").innerText = formatDuration(totalBreakMs);
-      document.getElementById("time-since-last-out").innerText = timeSinceLastOutMs > 0 ? 
-        formatDuration(timeSinceLastOutMs) : "N/A";
-    }
-
-    function renderPunches() {
-      const container = document.getElementById("punches-container");
-      container.innerHTML = "";
-
-      punches.forEach((punch, index) => {
-        const row = document.createElement("div");
-        row.className = "punch-row";
-        
-        // Add status classes
-        if (punch[0] && !punch[1]) {
-          row.classList.add("ongoing");
-        } else if (punch[0] && punch[1]) {
-          row.classList.add("completed");
+      updateEntry(id, field, value) {
+        if (!this.validateTimeInput(value) && value) {
+          this.showNotification('Invalid time format. Use HH:MM or HH:MM:SS', 'error');
+          return false;
         }
         
-        // In time input
-        const inInput = document.createElement("input");
-        inInput.type = "text";
-        inInput.className = "time-input";
-        inInput.value = punch[0] || "";
-        inInput.placeholder = "In (HH:MM:SS)";
-        inInput.dataset.index = index;
-        inInput.dataset.type = "in";
-        inInput.addEventListener("change", updatePunchTime);
-        inInput.addEventListener("blur", validateInput);
-        
-        // Out time input
-        const outInput = document.createElement("input");
-        outInput.type = "text";
-        outInput.className = "time-input";
-        outInput.value = punch[1] || "";
-        outInput.placeholder = "Out (HH:MM:SS)";
-        outInput.dataset.index = index;
-        outInput.dataset.type = "out";
-        outInput.addEventListener("change", updatePunchTime);
-        outInput.addEventListener("blur", validateInput);
+        const entry = this.entries.find(e => e.id === id);
+        if (entry) {
+          entry[field] = value;
+          this.saveToStorage();
+          this.render();
+          return true;
+        }
+        return false;
+      }
 
-        // Duration display
-        const duration = document.createElement("div");
-        duration.className = "duration-display";
+      // Clock in/out functionality
+      quickClockInOut() {
+        const ongoingEntry = this.entries.find(entry => entry.in && !entry.out);
+        const now = new Date();
         
-        if (punch[0] && punch[1]) {
-          const start = parseTime(punch[0]);
-          const end = parseTime(punch[1]);
-          const durationMs = Math.max(0, end - start);
-          duration.innerText = formatDuration(durationMs);
-        } else if (punch[0]) {
-          duration.innerText = "Ongoing";
-          duration.classList.add("ongoing");
+        if (ongoingEntry) {
+          // Clock out
+          ongoingEntry.out = this.formatTime(now);
+          this.showNotification('Clocked out successfully', 'success');
         } else {
-          duration.innerText = "0h 0m";
+          // Clock in
+          this.entries.push({
+            in: this.formatTime(now),
+            out: '',
+            id: Date.now()
+          });
+          this.showNotification('Clocked in successfully', 'success');
+        }
+        
+        this.saveToStorage();
+        this.render();
+      }
+
+      startBreak() {
+        const ongoingEntry = this.entries.find(entry => entry.in && !entry.out);
+        
+        if (ongoingEntry) {
+          const now = new Date();
+          ongoingEntry.out = this.formatTime(now);
+          this.saveToStorage();
+          this.render();
+          this.showNotification('Break started - clocked out', 'warning');
+        } else {
+          this.showNotification('No active time entry to end', 'error');
+        }
+      }
+
+      // Calculations
+      calculateTotals() {
+        let totalEffectiveMs = 0;
+        let firstInTime = null;
+        let lastOutTime = null;
+        let lastCompleteEntry = null;
+
+        this.entries.forEach(entry => {
+          if (entry.in && this.validateTimeInput(entry.in)) {
+            const startTime = this.parseTime(entry.in);
+            const endTime = entry.out && this.validateTimeInput(entry.out) 
+              ? this.parseTime(entry.out) 
+              : new Date();
+            
+            if (!firstInTime) {
+              firstInTime = startTime;
+            }
+            
+            if (entry.out && this.validateTimeInput(entry.out)) {
+              lastOutTime = this.parseTime(entry.out);
+              lastCompleteEntry = entry;
+            } else {
+              lastOutTime = new Date();
+            }
+            
+            totalEffectiveMs += Math.max(0, endTime - startTime);
+          }
+        });
+
+        // Calculate total clock time
+        let totalClockMs = 0;
+        if (firstInTime && lastOutTime) {
+          totalClockMs = Math.max(0, lastOutTime - firstInTime);
         }
 
-        // Break indicator
-        const breakIndicator = document.createElement("span");
-        if (index > 0 && punches[index - 1][1] && punch[0]) {
-          const prevOut = parseTime(punches[index - 1][1]);
-          const currentIn = parseTime(punch[0]);
-          const breakDuration = currentIn - prevOut;
-          if (breakDuration > 0) {
-            breakIndicator.className = "break-indicator";
-            breakIndicator.innerText = `Break: ${formatDuration(breakDuration)}`;
+        // Calculate break time
+        const totalBreakMs = this.calculateBreakTime();
+
+        // Calculate efficiency rate
+        let efficiencyRate = 0;
+        if (totalClockMs > 0) {
+          efficiencyRate = (totalEffectiveMs / totalClockMs) * 100;
+        }
+
+        // Calculate time since last clock out
+        let timeSinceLastOutMs = 0;
+        if (lastCompleteEntry) {
+          const lastOut = this.parseTime(lastCompleteEntry.out);
+          const now = new Date();
+          timeSinceLastOutMs = Math.max(0, now - lastOut);
+          
+          // If currently clocked in, reset to 0
+          const isCurrentlyClocked = this.entries.some(entry => entry.in && !entry.out);
+          if (isCurrentlyClocked) {
+            timeSinceLastOutMs = 0;
           }
         }
 
-        // Delete button
-        const deleteBtn = document.createElement("button");
-        deleteBtn.innerText = "Delete";
-        deleteBtn.className = "delete-btn";
-        deleteBtn.dataset.index = index;
-        deleteBtn.addEventListener("click", deletePunch);
-
-        row.appendChild(inInput);
-        row.appendChild(outInput);
-        row.appendChild(duration);
-        if (breakIndicator.innerText) row.appendChild(breakIndicator);
-        row.appendChild(deleteBtn);
-        container.appendChild(row);
-      });
-    }
-
-    function validateInput(event) {
-      const input = event.target;
-      const isValid = validateTimeInput(input.value);
-      
-      if (!isValid && input.value) {
-        input.classList.add("invalid");
-        showNotification("Invalid time format. Use HH:MM or HH:MM:SS", "error");
-      } else {
-        input.classList.remove("invalid");
+        return {
+          totalEffectiveMs,
+          totalClockMs,
+          totalBreakMs,
+          efficiencyRate,
+          timeSinceLastOutMs
+        };
       }
-    }
 
-    function updatePunchTime(event) {
-      const index = parseInt(event.target.dataset.index);
-      const type = event.target.dataset.type;
-      const value = event.target.value;
-      
-      if (!validateTimeInput(value) && value) {
-        showNotification("Invalid time format", "error");
-        return;
+      calculateBreakTime() {
+        let totalBreakMs = 0;
+        
+        for (let i = 0; i < this.entries.length - 1; i++) {
+          const currentEntry = this.entries[i];
+          const nextEntry = this.entries[i + 1];
+          
+          if (currentEntry.out && nextEntry.in) {
+            const breakStart = this.parseTime(currentEntry.out);
+            const breakEnd = this.parseTime(nextEntry.in);
+            totalBreakMs += Math.max(0, breakEnd - breakStart);
+          }
+        }
+        
+        return totalBreakMs;
       }
-      
-      if (type === "in") {
-        punches[index][0] = value;
-      } else {
-        punches[index][1] = value;
+
+      // Rendering
+      render() {
+        this.renderEntries();
+        this.renderStats();
+        this.updateQuickClockButton();
       }
-      
-      saveDataToStorage();
-      renderPunches();
-      calculateTotals();
-    }
 
-    function addPunch() {
-      punches.push(["", ""]);
-      saveDataToStorage();
-      renderPunches();
-      showNotification("New time entry added", "success");
-    }
+      renderEntries() {
+        const container = document.getElementById('entries-container');
+        
+        if (this.entries.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-state-icon">⏰</div>
+              <div class="empty-state-text">No time entries yet</div>
+              <div class="empty-state-subtext">Click "Add Entry" or "Clock In" to get started</div>
+            </div>
+          `;
+          return;
+        }
 
-    function startQuickBreak() {
-      // Find ongoing punch and clock out
-      const ongoingPunchIndex = punches.findIndex(punch => punch[0] && !punch[1]);
-      
-      if (ongoingPunchIndex >= 0) {
-        const now = new Date();
-        punches[ongoingPunchIndex][1] = formatTime(now);
-        saveDataToStorage();
-        renderPunches();
-        calculateTotals();
-        updateClockInOutButton();
-        showNotification("Break started - clocked out", "warning");
-      } else {
-        showNotification("No active time entry to end", "error");
-      }
-    }
+        container.innerHTML = this.entries.map((entry, index) => {
+          const isOngoing = entry.in && !entry.out;
+          const isCompleted = entry.in && entry.out;
+          const statusClass = isOngoing ? 'ongoing' : isCompleted ? 'completed' : '';
+          
+          // Calculate duration
+          let durationDisplay = '0h 0m';
+          let durationClass = 'duration-display';
+          
+          if (entry.in && entry.out) {
+            const start = this.parseTime(entry.in);
+            const end = this.parseTime(entry.out);
+            const durationMs = Math.max(0, end - start);
+            durationDisplay = this.formatDuration(durationMs);
+          } else if (entry.in) {
+            durationDisplay = 'Ongoing';
+            durationClass += ' ongoing';
+          }
 
-    function deletePunch(event) {
-      const index = parseInt(event.target.dataset.index);
-      if (confirm("Are you sure you want to delete this time entry?")) {
-        punches.splice(index, 1);
-        saveDataToStorage();
-        renderPunches();
-        calculateTotals();
-        showNotification("Time entry deleted", "success");
-      }
-    }
-
-    function updateClock() {
-      const now = new Date();
-      const timeStr = formatTime(now);
-      const dateStr = now.toLocaleDateString('en-US', { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-      });
-      document.getElementById("clock").innerHTML = 
-        `<div>${dateStr}</div><div>${timeStr}</div>`;
-      calculateTotals();
-    }
-
-    function handleClockInOut() {
-      const topButton = document.getElementById("clock-in-out");
-      const ongoingPunchIndex = punches.findIndex(punch => punch[0] && !punch[1]);
-      
-      if (ongoingPunchIndex >= 0) {
-        // Clock out
-        const now = new Date();
-        punches[ongoingPunchIndex][1] = formatTime(now);
-        topButton.innerText = "Clock In";
-        topButton.style.backgroundColor = "var(--add-btn)";
-        showNotification("Clocked out successfully", "success");
-      } else {
-        // Clock in
-        const now = new Date();
-        punches.push([formatTime(now), ""]);
-        topButton.innerText = "Clock Out";
-        topButton.style.backgroundColor = "var(--delete-btn)";
-        showNotification("Clocked in successfully", "success");
-      }
-      
-      saveDataToStorage();
-      renderPunches();
-      calculateTotals();
-    }
-
-    function updateClockInOutButton() {
-      const topButton = document.getElementById("clock-in-out");
-      const ongoingPunch = punches.some(punch => punch[0] && !punch[1]);
-      
-      if (ongoingPunch) {
-        topButton.innerText = "Clock Out";
-        topButton.style.backgroundColor = "var(--delete-btn)";
-      } else {
-        topButton.innerText = "Clock In";
-        topButton.style.backgroundColor = "var(--add-btn)";
-      }
-    }
-
-    function saveDataToStorage() {
-      const data = {
-        punches: punches,
-        date: currentDate
-      };
-      localStorage.setItem("effectiveHoursPunches", JSON.stringify(data));
-      
-      // Also save historical data
-      const historicalKey = `effectiveHours_${currentDate}`;
-      localStorage.setItem(historicalKey, JSON.stringify(punches));
-    }
-
-    function loadDataFromStorage() {
-      const savedData = localStorage.getItem("effectiveHoursPunches");
-      if (savedData) {
-        try {
-          const data = JSON.parse(savedData);
-          if (data.date === currentDate) {
-            punches = data.punches || [];
-          } else {
-            // Load data for current date if different
-            const historicalKey = `effectiveHours_${currentDate}`;
-            const historicalData = localStorage.getItem(historicalKey);
-            if (historicalData) {
-              punches = JSON.parse(historicalData);
-            } else {
-              punches = [];
+          // Calculate break indicator
+          let breakIndicator = '';
+          if (index > 0 && this.entries[index - 1].out && entry.in) {
+            const prevOut = this.parseTime(this.entries[index - 1].out);
+            const currentIn = this.parseTime(entry.in);
+            const breakDuration = currentIn - prevOut;
+            if (breakDuration > 0) {
+              breakIndicator = `
+                <div class="break-indicator">
+                  Break: ${this.formatDuration(breakDuration)}
+                </div>
+              `;
             }
           }
-        } catch (e) {
-          console.error("Error loading data:", e);
-          punches = [];
-        }
-      }
-    }
 
-    function resetData() {
-      if (confirm("Are you sure you want to reset all time entries for today?")) {
-        punches = [];
-        saveDataToStorage();
-        renderPunches();
-        calculateTotals();
-        updateClockInOutButton();
-        showNotification("Data reset successfully", "success");
-      }
-    }
+          return `
+            <div class="entry-row ${statusClass}">
+              <input 
+                type="text" 
+                class="time-input" 
+                value="${entry.in || ''}" 
+                placeholder="Clock In (HH:MM:SS)"
+                data-id="${entry.id}"
+                data-field="in"
+              />
+              <input 
+                type="text" 
+                class="time-input" 
+                value="${entry.out || ''}" 
+                placeholder="Clock Out (HH:MM:SS)"
+                data-id="${entry.id}"
+                data-field="out"
+              />
+              <div class="${durationClass}">${durationDisplay}</div>
+              ${breakIndicator}
+              <button 
+                class="btn btn-delete" 
+                data-id="${entry.id}"
+                title="Delete this entry"
+              >
+                🗑️
+              </button>
+            </div>
+          `;
+        }).join('');
 
-    function exportToCSV() {
-      const selectedDate = document.getElementById("export-date").value;
-      let dataToExport = punches;
-      
-      if (selectedDate) {
-        const dateKey = `effectiveHours_${new Date(selectedDate).toDateString()}`;
-        const historicalData = localStorage.getItem(dateKey);
-        if (historicalData) {
-          dataToExport = JSON.parse(historicalData);
-        } else {
-          showNotification("No data found for selected date", "warning");
-          return;
-        }
-      }
-      
-      const csvContent = "data:text/csv;charset=utf-8," 
-        + "Date,Clock In,Clock Out,Duration\n"
-        + dataToExport.map(([inTime, outTime]) => {
-          const duration = inTime && outTime ? 
-            formatDuration(parseTime(outTime) - parseTime(inTime)) : 
-            (inTime ? "Ongoing" : "");
-          return `${selectedDate || new Date().toLocaleDateString()},${inTime || ""},${outTime || ""},${duration}`;
-        }).join("\n");
+        // Add event listeners to inputs and buttons
+        container.querySelectorAll('.time-input').forEach(input => {
+          input.addEventListener('change', this.handleTimeInputChange.bind(this));
+          input.addEventListener('blur', this.handleTimeInputValidation.bind(this));
+        });
 
-      const encodedUri = encodeURI(csvContent);
-      const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", `time_entries_${selectedDate || new Date().toISOString().split('T')[0]}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      showNotification("CSV exported successfully", "success");
-    }
-
-    function exportToJSON() {
-      const selectedDate = document.getElementById("export-date").value;
-      let dataToExport = punches;
-      
-      if (selectedDate) {
-        const dateKey = `effectiveHours_${new Date(selectedDate).toDateString()}`;
-        const historicalData = localStorage.getItem(dateKey);
-        if (historicalData) {
-          dataToExport = JSON.parse(historicalData);
-        } else {
-          showNotification("No data found for selected date", "warning");
-          return;
-        }
-      }
-      
-      const exportData = {
-        date: selectedDate || new Date().toISOString().split('T')[0],
-        entries: dataToExport,
-        exported: new Date().toISOString()
-      };
-      
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
-      const link = document.createElement("a");
-      link.setAttribute("href", dataStr);
-      link.setAttribute("download", `time_entries_${selectedDate || new Date().toISOString().split('T')[0]}.json`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      showNotification("JSON exported successfully", "success");
-    }
-
-    // Initialize the application
-    function initApp() {
-      renderPunches();
-      calculateTotals();
-      updateClockInOutButton();
-      updateClock();
-      initTheme();
-      
-      // Set today's date as default for export
-      document.getElementById("export-date").value = new Date().toISOString().split('T')[0];
-    }
-
-    // Setup event listeners
-    document.addEventListener("DOMContentLoaded", function() {
-      document.getElementById("add-punch").addEventListener("click", addPunch);
-      document.getElementById("quick-break").addEventListener("click", startQuickBreak);
-      document.getElementById("clock-in-out").addEventListener("click", handleClockInOut);
-      document.getElementById("save-data").addEventListener("click", function() {
-        saveDataToStorage();
-        showNotification("Data saved successfully", "success");
-      });
-      document.getElementById("load-data").addEventListener("click", function() {
-        loadDataFromStorage();
-        renderPunches();
-        calculateTotals();
-        updateClockInOutButton();
-        showNotification("Data loaded successfully", "success");
-      });
-      document.getElementById("reset-data").addEventListener("click", resetData);
-      document.getElementById("export-csv").addEventListener("click", exportToCSV);
-      document.getElementById("export-json").addEventListener("click", exportToJSON);
-      document.getElementById("theme-toggle").addEventListener("change", function(e) {
-        setTheme(e.target.checked);
-        showNotification(`Switched to ${e.target.checked ? 'dark' : 'light'} theme`, "success");
-      });
-
-      // Listen for system dark mode changes
-      if (window.matchMedia) {
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-          if (localStorage.getItem('darkMode') === null) {
-            setTheme(e.matches);
-            document.getElementById('theme-toggle').checked = e.matches;
-          }
+        container.querySelectorAll('.btn-delete').forEach(button => {
+          button.addEventListener('click', this.handleDeleteEntry.bind(this));
         });
       }
 
-      // Initialize the app
-      initApp();
+      renderStats() {
+        const totals = this.calculateTotals();
+        
+        document.getElementById('effective-hours').textContent = 
+          this.formatDuration(totals.totalEffectiveMs);
+        document.getElementById('clock-time').textContent = 
+          this.formatDuration(totals.totalClockMs);
+        document.getElementById('efficiency-rate').textContent = 
+          totals.efficiencyRate.toFixed(1) + '%';
+        document.getElementById('break-time').textContent = 
+          this.formatDuration(totals.totalBreakMs);
+        document.getElementById('time-since-last-out').textContent = 
+          totals.timeSinceLastOutMs > 0 ? 
+          this.formatDuration(totals.timeSinceLastOutMs) : 'N/A';
+      }
+
+      updateQuickClockButton() {
+        const button = document.getElementById('quick-clock-btn');
+        const isClocked = this.entries.some(entry => entry.in && !entry.out);
+        
+        if (isClocked) {
+          button.textContent = 'Clock Out';
+          button.classList.add('clocked-in');
+        } else {
+          button.textContent = 'Clock In';
+          button.classList.remove('clocked-in');
+        }
+      }
+
+      updateClock() {
+        const now = new Date();
+        const timeStr = this.formatTime(now);
+        const dateStr = now.toLocaleDateString('en-US', { 
+          weekday: 'long', 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        });
+        
+        const clockElement = document.getElementById('header-clock');
+        clockElement.innerHTML = `
+          <div class="clock-date">${dateStr}</div>
+          <div class="clock-time">${timeStr}</div>
+        `;
+        
+        this.renderStats(); // Update stats in real-time
+      }
+
+      // Event handlers
+      handleTimeInputChange(event) {
+        const id = parseInt(event.target.dataset.id);
+        const field = event.target.dataset.field;
+        const value = event.target.value;
+        
+        this.updateEntry(id, field, value);
+      }
+
+      handleTimeInputValidation(event) {
+        const isValid = this.validateTimeInput(event.target.value);
+        
+        if (!isValid && event.target.value) {
+          event.target.classList.add('invalid');
+        } else {
+          event.target.classList.remove('invalid');
+        }
+      }
+
+      handleDeleteEntry(event) {
+        const id = parseInt(event.target.dataset.id);
+        this.deleteEntry(id);
+      }
+
+      // Data persistence
+      saveToStorage() {
+        const data = {
+          entries: this.entries,
+          date: this.currentDate
+        };
+        localStorage.setItem('timeTracker_current', JSON.stringify(data));
+        
+        // Also save historical data
+        const historicalKey = `timeTracker_${this.currentDate}`;
+        localStorage.setItem(historicalKey, JSON.stringify(this.entries));
+      }
+
+      loadFromStorage() {
+        const savedData = localStorage.getItem('timeTracker_current');
+        if (savedData) {
+          try {
+            const data = JSON.parse(savedData);
+            if (data.date === this.currentDate) {
+              this.entries = data.entries || [];
+            } else {
+              // Load historical data for current date
+              const historicalKey = `timeTracker_${this.currentDate}`;
+              const historicalData = localStorage.getItem(historicalKey);
+              if (historicalData) {
+                this.entries = JSON.parse(historicalData);
+              } else {
+                this.entries = [];
+              }
+            }
+          } catch (e) {
+            console.error('Error loading data:', e);
+            this.entries = [];
+          }
+        }
+      }
+
+      resetData() {
+        if (confirm('Are you sure you want to reset all time entries for today? This cannot be undone.')) {
+          this.entries = [];
+          this.saveToStorage();
+          this.render();
+          this.showNotification('Data reset successfully', 'success');
+        }
+      }
+
+      // Export functionality
+      exportToCSV() {
+        const selectedDate = document.getElementById('export-date').value;
+        let dataToExport = this.entries;
+        
+        if (selectedDate) {
+          const dateKey = `timeTracker_${new Date(selectedDate).toDateString()}`;
+          const historicalData = localStorage.getItem(dateKey);
+          if (historicalData) {
+            dataToExport = JSON.parse(historicalData);
+          } else {
+            this.showNotification('No data found for selected date', 'warning');
+            return;
+          }
+        }
+        
+        const csvHeader = 'Date,Clock In,Clock Out,Duration,Break After\n';
+        const csvRows = dataToExport.map((entry, index) => {
+          const duration = entry.in && entry.out ? 
+            this.formatDuration(this.parseTime(entry.out) - this.parseTime(entry.in)) : 
+            (entry.in ? 'Ongoing' : '');
+          
+          let breakAfter = '';
+          if (index < dataToExport.length - 1 && entry.out && dataToExport[index + 1].in) {
+            const breakDuration = this.parseTime(dataToExport[index + 1].in) - this.parseTime(entry.out);
+            breakAfter = this.formatDuration(breakDuration);
+          }
+          
+          return `${selectedDate || new Date().toLocaleDateString()},"${entry.in || ''}","${entry.out || ''}","${duration}","${breakAfter}"`;
+        }).join('\n');
+
+        const csvContent = csvHeader + csvRows;
+        this.downloadFile(csvContent, `time_entries_${selectedDate || new Date().toISOString().split('T')[0]}.csv`, 'text/csv');
+        this.showNotification('CSV exported successfully', 'success');
+      }
+
+      exportToJSON() {
+        const selectedDate = document.getElementById('export-date').value;
+        let dataToExport = this.entries;
+        
+        if (selectedDate) {
+          const dateKey = `timeTracker_${new Date(selectedDate).toDateString()}`;
+          const historicalData = localStorage.getItem(dateKey);
+          if (historicalData) {
+            dataToExport = JSON.parse(historicalData);
+          } else {
+            this.showNotification('No data found for selected date', 'warning');
+            return;
+          }
+        }
+        
+        const exportData = {
+          version: '2.0',
+          date: selectedDate || new Date().toISOString().split('T')[0],
+          entries: dataToExport,
+          exported: new Date().toISOString(),
+          summary: this.calculateTotals()
+        };
+        
+        const jsonContent = JSON.stringify(exportData, null, 2);
+        this.downloadFile(jsonContent, `time_entries_${selectedDate || new Date().toISOString().split('T')[0]}.json`, 'application/json');
+        this.showNotification('JSON exported successfully', 'success');
+      }
+
+      downloadFile(content, filename, contentType) {
+        const blob = new Blob([content], { type: contentType });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }
+
+      setExportDateToToday() {
+        document.getElementById('export-date').value = new Date().toISOString().split('T')[0];
+      }
+
+      // Notification system
+      showNotification(message, type = 'success') {
+        // Remove existing notifications
+        document.querySelectorAll('.notification').forEach(notification => {
+          document.body.removeChild(notification);
+        });
+
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        
+        const icons = {
+          success: '✅',
+          error: '❌',
+          warning: '⚠️'
+        };
+        
+        notification.innerHTML = `${icons[type] || 'ℹ️'} ${message}`;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => notification.classList.add('show'), 100);
+        setTimeout(() => {
+          notification.classList.remove('show');
+          setTimeout(() => {
+            if (document.body.contains(notification)) {
+              document.body.removeChild(notification);
+            }
+          }, 300);
+        }, 4000);
+      }
+
+      // Timer management
+      startClockUpdate() {
+        this.updateClock(); // Initial update
+        this.clockUpdateInterval = setInterval(() => {
+          this.updateClock();
+        }, 1000);
+      }
+
+      startAutoSave() {
+        this.autoSaveInterval = setInterval(() => {
+          this.saveToStorage();
+        }, 30000); // Auto-save every 30 seconds
+      }
+
+      // Event listener setup
+      setupEventListeners() {
+        // Theme toggle
+        document.getElementById('theme-toggle').addEventListener('change', (e) => {
+          this.setTheme(e.target.checked);
+          this.showNotification(`Switched to ${e.target.checked ? 'dark' : 'light'} theme`, 'success');
+        });
+
+        // Main controls
+        document.getElementById('quick-clock-btn').addEventListener('click', () => {
+          this.quickClockInOut();
+        });
+
+        document.getElementById('add-entry-btn').addEventListener('click', () => {
+          this.addEntry();
+        });
+
+        document.getElementById('start-break-btn').addEventListener('click', () => {
+          this.startBreak();
+        });
+
+        // Data management
+        document.getElementById('save-btn').addEventListener('click', () => {
+          this.saveToStorage();
+          this.showNotification('Data saved successfully', 'success');
+        });
+
+        document.getElementById('load-btn').addEventListener('click', () => {
+          this.loadFromStorage();
+          this.render();
+          this.showNotification('Data loaded successfully', 'success');
+        });
+
+        document.getElementById('reset-btn').addEventListener('click', () => {
+          this.resetData();
+        });
+
+        // Export controls
+        document.getElementById('export-csv-btn').addEventListener('click', () => {
+          this.exportToCSV();
+        });
+
+        document.getElementById('export-json-btn').addEventListener('click', () => {
+          this.exportToJSON();
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+          if (e.ctrlKey || e.metaKey) {
+            switch (e.key) {
+              case 's':
+                e.preventDefault();
+                this.saveToStorage();
+                this.showNotification('Data saved (Ctrl+S)', 'success');
+                break;
+              case 'Enter':
+                if (e.shiftKey) {
+                  e.preventDefault();
+                  this.quickClockInOut();
+                }
+                break;
+            }
+          }
+        });
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+          this.saveToStorage();
+          if (this.clockUpdateInterval) {
+            clearInterval(this.clockUpdateInterval);
+          }
+          if (this.autoSaveInterval) {
+            clearInterval(this.autoSaveInterval);
+          }
+        });
+      }
+    }
+
+    // Initialize the application
+    document.addEventListener('DOMContentLoaded', () => {
+      new TimeTracker();
     });
 
-    // Update the clock and calculations every second
-    setInterval(updateClock, 1000);
-
+    // Service Worker registration for offline functionality (optional)
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {
+        // Service worker registration failed, but app still works
+      });
+    }
   </script>
 </body>
 </html>
